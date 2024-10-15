@@ -14,19 +14,25 @@
 						<tr class="fw-bold text-primary">
 							<th scope="col">Email</th>
 							<th scope="col">Date d'inscription</th>
-                            <th scope="col">Rôle</th>
+							<th scope="col">Rôle</th>
 						</tr>
 					</thead>
 					<tbody>
 						{% for user in users |sort((a, b) => a.dateInscription <=> b.dateInscription) %}
-							<tr class="{{ cycle(['table-primary', 'table-secondary'], loop.index0) }}">
-								{# <td>{{ user.nom |capitalize }}</td>
-								<td>{{ user.sujet |capitalize }}</td> #}
+							<tr
+								class="{{ cycle(['table-primary', 'table-secondary'], loop.index0) }}">
+								{# <td>{{ user.nom |capitalize }}</td><td>{{ user.sujet |capitalize }}</td> #}
 								<td>{{ user.email | lower }}</td>
 								<td>{{ user.dateInscription |date("d-m-Y à H:i:s") }}</td>
-                                {% if "ROLE_ADMIN" in user.roles %}
-                                <td>Administrateur</td>
-                                {% endif %}
+								{% if "ROLE_ADMIN" in user.roles %}
+									<td>Administrateur</td>
+								{% else %}
+									{% if "ROLE_MOD" in user.roles %}
+										<td>Modérateur</td>
+									{% else %}
+										<td>Utilisateur</td>
+									{% endif %}
+								{% endif %}
 							</tr>
 						{% endfor %}
 					</tbody>
@@ -34,5 +40,4 @@
 			</div>
 		</div>
 	</div>
-</div>
-{% endblock %}
+</div>{% endblock %}
