@@ -21,7 +21,7 @@ class BaseController extends AbstractController
         ]);
     }
 
-    #[Route('/categorie', name: 'app_categorie')]
+    #[Route('/private-categorie', name: 'app_categorie')]
     public function categorie(Request $request, EntityManagerInterface $em): Response
     {
         $categorie = new Categorie();

@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class ContactController extends AbstractController
 {
-    #[Route('/liste-contacts', name: 'app_liste_contacts')]
+    #[Route('/mod-liste-contacts', name: 'app_liste_contacts')]
     public function listeContacts(ContactRepository $contactRepository): Response
     {
         $contacts = $contactRepository->findAll();
