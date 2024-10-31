@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	{{parent()}}Profil
+{% endblock %}
+{% block body %}
+	<h1 class="text-center text-primary mt-4 pt-4 display-1 fw-bold">
+		SHARE</h1>
+	<h2 class="text-center text-secondary mb-4 pb-4 display-1">
+		Votre profil
+	</h2>
+
+	<div class="container">
+		<div class="row justify-content-center" style="font-size: 20px;">
+			<div class="col-4">
+				<div class="mb-2 d-flex">
+					<strong>Email :</strong>
+					<span style="padding-left: 20px;">{{ app.user.email }}</span>
+				</div>
+                <hr>
+				<div class="mb-2 d-flex">
+					<strong>Nom :</strong>
+					<span style="padding-left: 20px;">{{ app.user.nom }}</span>
+				</div>
+                <hr>
+				<div class="mb-2 d-flex">
+					<strong>Prénom :</strong>
+					<span style="padding-left: 20px;">{{ app.user.prenom }}</span>
+				</div>
+                <hr>
+				<div class="mb-2 d-flex">
+					<strong>Date d'inscription :</strong>
+					<span style="padding-left: 20px;">{{ app.user.dateInscription|date('Y-m-d') }}</span>
+				</div>
+                <hr>
+				<div class="mb-2 d-flex">
+					<strong>Rôle :</strong>
+					{% if "ROLE_ADMIN" in app.user.roles %}
+						<span style="padding-left: 20px;">Administrateur</span>
+					{% else %}
+						{% if "ROLE_MOD" in app.user.roles %}
+							<span style="padding-left: 20px;">Modérateur</span>
+						{% else %}
+							<span style="padding-left: 20px;">Utilisateur</span>
+						{% endif %}
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
