@@ -15,13 +15,13 @@
 							<th scope="col">Email</th>
 							<th scope="col">Date d'inscription</th>
 							<th scope="col">Rôle</th>
+							<th scope="col">Nombre de fichiers</th>
 						</tr>
 					</thead>
 					<tbody>
 						{% for user in users |sort((a, b) => a.dateInscription <=> b.dateInscription) %}
 							<tr
 								class="{{ cycle(['table-primary', 'table-secondary'], loop.index0) }}">
-								{# <td>{{ user.nom |capitalize }}</td><td>{{ user.sujet |capitalize }}</td> #}
 								<td>{{ user.email | lower }}</td>
 								<td>{{ user.dateInscription |date("d-m-Y à H:i:s") }}</td>
 								{% if "ROLE_ADMIN" in user.roles %}
@@ -33,6 +33,7 @@
 										<td>Utilisateur</td>
 									{% endif %}
 								{% endif %}
+								<td>{{ user.fichiers | length }}</td>
 							</tr>
 						{% endfor %}
 					</tbody>
