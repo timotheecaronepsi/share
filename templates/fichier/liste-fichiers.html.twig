@@ -26,7 +26,7 @@
 							{% for fichier in fichiers | sort((a, b) => a.nomOriginal <=> b.nomOriginal) %}
 								<tr class="{{ cycle(['table-primary', 'table-secondary'], loop.index0) }}">
 									<td>{{ fichier.nomOriginal }}</td>
-									<td>{{ fichier.dateEnvoi | date('Y-m-d H:i') }}</td>
+									<td>{{ fichier.dateEnvoi | date("d-m-Y à H:i") }}</td>
 									<td>{{ fichier.extension | capitalize }}</td>
 									<td>{{ fichier.user.nom | capitalize }}</td>
 									<td>{{ fichier.user.prenom | capitalize }}</td>

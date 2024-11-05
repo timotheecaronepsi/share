@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Fichier;
+use App\Entity\Scategorie;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -19,28 +20,23 @@ class FichierType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nomOriginal', TextType::class, ['attr' => ['class' => 'form-control'], 'label_attr' => ['class' =>
-                'fw-bold']])
-            ->add('nomServeur', TextType::class, ['attr' => ['class' => 'form-control'], 'label_attr' => ['class' =>
-                'fw-bold']])
+            ->add('nomOriginal', TextType::class, ['attr' => ['class' => 'form-control'], 'label_attr' =>
+                ['class' => 'fw-bold']])
+            ->add('nomServeur', TextType::class, ['attr' => ['class' => 'form-control'], 'label_attr' =>
+                ['class' => 'fw-bold']])
             ->add('dateEnvoi', DateTimeType::class, [
-                'widget' => 'choice',
-                'years' => range(2010, date('Y') + 10), 
-                'months' => range(1, 12),
-                'days' => range(1, 31), 
-                'hours' => range(0, 23), 
-                'minutes' => range(0, 59),
-                'attr' => [
-                    'class' => 'form-control',
-                ],
-                'label_attr' => ['class' => 'fw-bold'],
+                'widget' => 'single_text',
+                'attr' => ['class' => 'form-control'], 'label_attr' => ['class' => 'fw-bold'],
             ])
-            ->add('extension', TextType::class, ['attr' => ['class' => 'form-control'], 'label_attr' => ['class' =>
-                'fw-bold']])
-            ->add('taille', IntegerType::class, ['attr' => ['class' => 'form-control'], 'label_attr' => ['class' =>
-                'fw-bold']])
+
+            ->add('extension', TextType::class, ['attr' => ['class' => 'form-control'], 'label_attr' =>
+                ['class' => 'fw-bold']])
+            ->add('taille', IntegerType::class, ['attr' => ['class' => 'form-control'], 'label_attr' =>
+                ['class' => 'fw-bold']])
             ->add('user', EntityType::class, [
+                'label' => "Utilisateur",
                 'class' => User::class,
+                'attr' => ['class' => 'form-control'], 'label_attr' => ['class' => 'fw-bold'],
                 'choice_label' => function ($user) {
                     return $user->getNom() . ' ' . $user->getPrenom();
                 },
@@ -49,19 +45,23 @@ class FichierType extends AbstractType
                         ->orderBy('u.nom', 'ASC')
                         ->addOrderBy('u.prenom', 'ASC');
                 },
-                'attr' => ['class' => 'form-control'], 'label_attr' => ['class' =>
-                    'fw-bold'],
             ])
-            ->add('envoyer', SubmitType::class, ['attr' => ['class' => 'btn bg-primary text-white m-4'],
+            ->add('scategories', EntityType::class, [
+                'class' => Scategorie::class,
+                'choices' => $options['scategories'],
+                'choice_label' => 'libelle',
+                'expanded' => true,
+                'multiple' => true,
+                'label' => false, 'mapped' => false])
+            ->add('ajouter', SubmitType::class, ['attr' => ['class' => 'btn bg-primary text-white m-4'],
                 'row_attr' => ['class' => 'text-center']])
         ;
-
     }
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Fichier::class,
+            'scategories' => [],
         ]);
     }
 }

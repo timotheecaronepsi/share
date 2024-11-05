@@ -28,8 +28,7 @@ capitalize }}</td>
 									<td>{{ contact.sujet |
 capitalize }}</td>
 									<td>{{ contact.email | lower }}</td>
-									<td>{{ contact.dateEnvoi |
-date("d-m-Y à H:i:s") }}</td>
+									<td>{{ contact.dateEnvoi | date("d-m-Y à H:i:s") }}</td>
 								</tr>
 							{% endfor %}
 						</tbody>
