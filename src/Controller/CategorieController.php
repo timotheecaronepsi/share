@@ -57,8 +57,8 @@ class CategorieController extends AbstractController
     }
 
     #[Route('/private-supprimer-categorie/{id}', name: 'app_supprimer_categorie')]
-    public function supprimerCategorie(Request $request, Categorie
-         $categorie, EntityManagerInterface $em): Response {
+    public function supprimerCategorie(Request $request, Categorie $categorie, EntityManagerInterface $em): Response
+    {
         if ($categorie != null) {
             $em->remove($categorie);
             $em->flush();
