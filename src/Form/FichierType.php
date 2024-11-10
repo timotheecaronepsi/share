@@ -8,33 +8,30 @@ use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class FichierType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nomOriginal', TextType::class, ['attr' => ['class' => 'form-control'], 'label_attr' =>
-                ['class' => 'fw-bold']])
-            ->add('nomServeur', TextType::class, ['attr' => ['class' => 'form-control'], 'label_attr' =>
-                ['class' => 'fw-bold']])
-            ->add('dateEnvoi', DateTimeType::class, [
-                'widget' => 'single_text',
-                'attr' => ['class' => 'form-control'], 'label_attr' => ['class' => 'fw-bold'],
-            ])
-
-            ->add('extension', TextType::class, ['attr' => ['class' => 'form-control'], 'label_attr' =>
-                ['class' => 'fw-bold']])
-            ->add('taille', IntegerType::class, ['attr' => ['class' => 'form-control'], 'label_attr' =>
-                ['class' => 'fw-bold']])
+            ->add('fichier', FileType::class, array('label' => 'Fichier', 'mapped' => false, 'attr' => ['class' => 'form-control'], 'label_attr' => ['class' => 'fw-bold'], 'constraints' => [
+                new File([
+                    'maxSize' => '200k',
+                    'mimeTypes' => [
+                        'application/pdf',
+                        'application/x-pdf',
+                        'image/jpeg',
+                        'image/png',
+                    ],
+                    'mimeTypesMessage' => 'Le site accepte uniquement les fichiers PDF, PNG et JPG',
+                ]),
+            ]))
             ->add('user', EntityType::class, [
-                'label' => "Utilisateur",
                 'class' => User::class,
                 'attr' => ['class' => 'form-control'], 'label_attr' => ['class' => 'fw-bold'],
                 'choice_label' => function ($user) {
@@ -57,6 +54,7 @@ class FichierType extends AbstractType
                 'row_attr' => ['class' => 'text-center']])
         ;
     }
+
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
