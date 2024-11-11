@@ -22,7 +22,9 @@ class FichierController extends AbstractController
         $fichier = new Fichier();
         $scategories = $scategorieRepository->findBy([], ['categorie' => 'asc', 'numero' => 'asc']);
         $form = $this->createForm(FichierType::class, $fichier, ['scategories' => $scategories]);
+
         $form->handleRequest($request);
+        
         if ($form->isSubmitted() && $form->isValid()) {
             $selectedScategories = $form->get('scategories')->getData();
             foreach ($selectedScategories as $scategorie) {

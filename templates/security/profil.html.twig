@@ -3,37 +3,25 @@
 	{{parent()}}Profil
 {% endblock %}
 {% block body %}
-	<h1 class="text-center text-primary mt-4 pt-4 display-1 fw-bold">
-		SHARE</h1>
-	<h2 class="text-center text-secondary mb-4 pb-4 display-1">
-		Votre profil
-	</h2>
-
+	<h1 class="text-center text-primary mt-4 pt-4 display-1 fw-bold">SHARE</h1>
+	<h2 class="text-center text-secondary mb-4 pb-4 display-1">Votre profil</h2>
 	<div class="container">
 		<div class="row justify-content-center" style="font-size: 20px;">
 			<div class="col-4">
-				<div class="mb-2 d-flex">
-					<strong>Email :</strong>
-					<span style="padding-left: 20px;">{{ app.user.email }}</span>
-				</div>
-                <hr>
-				<div class="mb-2 d-flex">
-					<strong>Nom :</strong>
+				<div class="mb-2 d-flex justify-content-center">
 					<span style="padding-left: 20px;">{{ app.user.nom }}</span>
-				</div>
-                <hr>
-				<div class="mb-2 d-flex">
-					<strong>Prénom :</strong>
 					<span style="padding-left: 20px;">{{ app.user.prenom }}</span>
 				</div>
-                <hr>
-				<div class="mb-2 d-flex">
-					<strong>Date d'inscription :</strong>
+				<hr>
+				<div class="mb-2 d-flex justify-content-center">
+					<span style="padding-left: 20px;">{{ app.user.email }}</span>
+				</div>
+				<hr>
+				<div class="mb-2 d-flex justify-content-center">
 					<span style="padding-left: 20px;">{{ app.user.dateInscription|date('Y-m-d') }}</span>
 				</div>
-                <hr>
-				<div class="mb-2 d-flex">
-					<strong>Rôle :</strong>
+				<hr>
+				<div class="mb-2 d-flex justify-content-center">
 					{% if "ROLE_ADMIN" in app.user.roles %}
 						<span style="padding-left: 20px;">Administrateur</span>
 					{% else %}
@@ -44,7 +32,77 @@
 						{% endif %}
 					{% endif %}
 				</div>
+				<hr>
+				<div class="mb-2 d-flex justify-content-center">
+					<span>Vous avez
+						{{ app.user.fichiers | length }}
+						fichier(s)</span>
+				</div>
+				<hr>
 			</div>
+			<div style="padding-top: 20px">
+				<table class="table table-hover">
+					{% if app.user.fichiers | length > 0 %}
+						{% for f in app.user.fichiers %}
+							<tr>
+								<td class="text-center">
+									<fieldset>
+										<legend>
+											<i class="bi bi-filetype-pdf"></i>
+											<a href="{{path('app_telechargement_fichier_user', {'id':f.id})}}" style="text-decoration: none">{{f.nomOriginal}}</a>
+										</legend>
+										<ul style="list-style: none">
+											{% for s in f.scategories %}
+												<li>{{s.numero}}
+													{{s.libelle | capitalize}}</li>
+											{% endfor %}
+										</ul>
+										{% if not loop.last %}
+											<hr>
+										{% endif %}
+									</fieldset>
+								</td>
+							</tr>
+						{% endfor %}
+					{% else %}
+						<tr>
+							<td class="text-center">Aucun fichier</td>
+						</tr>
+					{% endif %}
+				</table>
+			</div>
+		</div>
+		<div style="padding-top: 50px">
+			<h3 class="text-center">Ajouter un fichier</h3>
+			{{ form_start(form) }}
+			{{ form_row(form.fichier) }}
+			<div class="mt-5 bg-white p-4">
+				<div class="table-responsive">
+					<table class="table">
+						{% set id = null %}
+						{% for scategorie in scategories %}
+							{% if id != scategorie.categorie.id %}
+								{% set id = scategorie.categorie.id %}
+								<tr class="table-primary" style="color: white;">
+									<td class="fw-bold">{{ scategorie.categorie.id }}
+										{{ scategorie.categorie.libelle }}</td>
+									<td></td>
+								</tr>
+							{% endif %}
+							<tr class="table-secondary">
+								<td class="text-primary">-
+									{{ scategorie.numero }}
+									{{ scategorie.libelle }}</td>
+								<td class="text-primary">{{ form_widget(form.scategories[scategorie.id]) }}</td>
+							</tr>
+						{% endfor %}
+					</table>
+				</div>
+			</div>
+			<div class="mt-4">
+				{{ form_row(form.ajouter) }}
+			</div>
+			{{ form_end(form) }}
 		</div>
 	</div>
 
