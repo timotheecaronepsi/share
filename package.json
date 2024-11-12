@@ -1,5 +1,9 @@
 {
   "dependencies": {
     "node-cron": "^3.0.3"
+  },
+  "devDependencies": {
+    "@symfony/webpack-encore": "^5.0.1",
+    "webpack-notifier": "^1.15.0"
   }
 }
