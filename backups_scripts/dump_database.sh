@@ -11,10 +11,10 @@ ENCRYPTED_FILE="$BACKUP_DIR/${DB_NAME}_${TIMESTAMP}.sql.enc"    # Nom du fichier
 ENCRYPTION_PASSWORD="share"                                     # Mot de passe pour le chiffrement
 CHECKSUM_FILE="$ENCRYPTED_FILE.sha256"                          # Fichier de somme de contrôle
 
-# # Détails du serveur distant
-# REMOTE_USER="user_remote"                                       # Nom d'utilisateur du serveur distant
-# REMOTE_HOST="host_remote"                                       # Adresse IP ou nom de domaine du serveur distant
-# REMOTE_DIR="/var/www/html/share/backup"                         # Répertoire de destination sur le serveur distant
+# Détails du serveur distant
+REMOTE_USER="login8078"                                       # Nom d'utilisateur du serveur distant
+REMOTE_HOST="10.189.166.169"                                       # Adresse IP ou nom de domaine du serveur distant
+REMOTE_DIR="/var/www/html/share/backups"                         # Répertoire de destination sur le serveur distant
 
 # Exportation de la base de données
 mysqldump -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" > "$DUMP_FILE"
@@ -41,30 +41,38 @@ else
 fi
 
 # Génération de la somme de contrôle du fichier chiffré
-# sha256sum "$ENCRYPTED_FILE" > "$CHECKSUM_FILE"
+sha256sum "$ENCRYPTED_FILE" > "$CHECKSUM_FILE"
 
-# # Envoi du fichier chiffré et de la somme de contrôle vers le serveur distant
-# scp "$ENCRYPTED_FILE" #"$CHECKSUM_FILE" "$REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR"
+# Envoi du fichier chiffré et de la somme de contrôle vers le serveur distant
+scp "$ENCRYPTED_FILE" "$CHECKSUM_FILE" "$REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR"
 
-# # Vérification de l'envoi
-# if [ $? -eq 0 ]; then
-#     echo "Le fichier de sauvegarde chiffré et le fichier de somme de contrôle ont été envoyés avec succès"
-#     # Supprime les fichiers locaux après l'envoi
-#     rm "$ENCRYPTED_FILE" "$CHECKSUM_FILE"
-# else
-#     echo "Erreur lors de l'envoi des fichiers vers le serveur distant"
-#     exit 1
-# fi
+# Vérification de l'envoi
+if [ $? -eq 0 ]; then
+    echo "Le fichier de sauvegarde chiffré et le fichier de somme de contrôle ont été envoyés avec succès"
+    # Supprime les fichiers locaux après l'envoi
+    # rm "$ENCRYPTED_FILE" "$CHECKSUM_FILE"
+else
+    echo "Erreur lors de l'envoi des fichiers vers le serveur distant"
+    exit 1
+fi
 
-# # Commande pour vérifier l'intégrité sur le serveur distant
-# ssh "$REMOTE_USER@$REMOTE_HOST" << EOF
-# cd "$REMOTE_DIR"
-# # Calculer la somme de contrôle du fichier reçu
-# sha256sum -c "$(basename "$CHECKSUM_FILE")" --status
-# if [ $? -eq 0 ]; then
-#     echo "Vérification réussie : le fichier reçu est identique à celui envoyé."
-# else
-#     echo "Échec de la vérification : le fichier reçu est différent de celui envoyé."
-#     exit 1
-# fi
-# EOF
+# Commande pour vérifier l'intégrité sur le serveur distant
+ssh "$REMOTE_USER@$REMOTE_HOST" << EOF
+cd "$REMOTE_DIR"
+# Vérifier si les fichiers existent avec leurs noms relatifs
+if [ -f "$(basename "$ENCRYPTED_FILE")" ] && [ -f "$(basename "$CHECKSUM_FILE")" ]; then
+    echo "Les fichiers sont présents. Vérification de l'intégrité..."
+    # Vérification de la somme de contrôle en utilisant le nom de fichier sans chemin
+    sha256sum -c "$(basename "$CHECKSUM_FILE")" --status
+    if [ $? -eq 0 ]; then
+        echo "Vérification réussie : le fichier reçu est identique à celui envoyé."
+        rm "$CHECKSUM_FILE"
+    else
+        echo "Échec de la vérification : le fichier reçu est différent de celui envoyé."
+        exit 1
+    fi
+else
+    echo "Erreur : les fichiers nécessaires à la vérification sont manquants sur le serveur distant."
+    exit 1
+fi
+EOF
