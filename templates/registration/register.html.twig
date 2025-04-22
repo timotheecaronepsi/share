@@ -6,21 +6,36 @@
 {% block body %}
 	<div class="container-fluid">
 		<h1 class="text-center text-primary mt-4 pt-4 display-1 fw-bold">INSCRIPTION</h1>
-	</h1>
-	<div class="row justify-content-center">
-		<div class="col-12 col-md-6 bg-white p-4 m-0 text-primary">
-			{{ form_errors(registrationForm) }}
-			{{ form_start(registrationForm) }}
-			{{ form_row(registrationForm.email) }}
-			{{ form_row(registrationForm.nom, {label: 'Nom'}) }}
-			{{ form_row(registrationForm.prenom, {label: 'Prénom'}) }}
-			{{ form_row(registrationForm.plainPassword, {label: 'Password'}) }}
-			{{ form_row(registrationForm.agreeTerms) }}
-			<div class="text-center">
-				<button class="btn btn-lg btn-primary mt-2" type="submit">
-					S'inscrire</button>
+		<div class="row justify-content-center">
+			<div class="col-12 col-md-6 bg-white p-4 m-0 text-primary">
+				{{ form_start(registrationForm, {'attr': {'id': 'registration_form'}}) }}
+				{{ form_errors(registrationForm) }}
+				{{ form_start(registrationForm) }}
+				{{ form_row(registrationForm.email) }}
+				{{ form_row(registrationForm.nom, {label: 'Nom'}) }}
+				{{ form_row(registrationForm.prenom, {label: 'Prénom'}) }}
+				{{ form_row(registrationForm.plainPassword, {label: 'Password'}) }}
+				{{ form_row(registrationForm.agreeTerms) }}
+				<div
+					class="text-center">
+
+					{# Code pour le captcha en JS #}
+					<div class="mb-3 text-center">
+						<div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+							<label for="captchaInput" class="form-label">Recopiez le code :</label>
+							<canvas id="captchaCanvas" width="150" height="50" class="border"></canvas>
+							<button type="button" id="refreshCaptcha" class="btn btn-sm btn-secondary">↻</button>
+							<input type="text" id="captchaInput" class="form-control" placeholder="Tapez le code" style="width: 180px;">
+						</div>
+
+						<small id="captchaError" class="text-danger d-none">Code incorrect. Essayez encore.</small>
+					</div>
+
+					<button class="btn btn-lg btn-primary mt-2" type="submit">
+						S'inscrire</button>
+				</div>
+				{{ form_end(registrationForm) }}
 			</div>
-			{{ form_end(registrationForm) }}
 		</div>
 	</div>
-</div>{% endblock %}
+{% endblock %}

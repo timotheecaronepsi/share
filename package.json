@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "core-js": "^3.41.0",
     "node-cron": "^3.0.3"
   },
   "devDependencies": {
